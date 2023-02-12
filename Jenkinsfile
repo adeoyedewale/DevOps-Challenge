@@ -4,7 +4,7 @@ pipeline {
     environment {
 	    DOCKERHUB_CREDENTIALS=credentials('dockerhub')
 	    AWS_DEFAULT_REGION="us-east-1"
-	    THE_BUTLER_SAYS_SO=credentials('aws-cred3')
+	    THE_BUTLER_SAYS_SO=credentials('aws-cred4')
     }
 
     stages {
@@ -31,14 +31,14 @@ pipeline {
 
       stage('Create Docker Image') {
 	      steps {
-		      sh 'docker build -t eruobodo/devops-challenge-image:$BUILD_NUMBER .'
+		      sh 'docker build -t eruobodo/rayrepo2:$BUILD_NUMBER .'
 	      }
       }
       stage('Push') {
 	      steps {
 		      withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
 			      sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-			      sh 'docker push eruobodo/devops-challenge-image:$BUILD_NUMBER'
+			      sh 'docker push eruobodo/rayrepo2:$BUILD_NUMBER'
 		      }
 	      }
       }
@@ -47,8 +47,8 @@ pipeline {
 	      steps {
 		      sh '''
 		      aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/c6p1p1z3
-		      docker tag eruobodo/devops-challenge-image:$BUILD_NUMBER public.ecr.aws/c6p1p1z3/newrepo:$BUILD_NUMBER
-		      docker push public.ecr.aws/c6p1p1z3/newrepo:$BUILD_NUMBER
+		      docker tag eruobodo/rayrepo2:$BUILD_NUMBER public.ecr.aws/c6p1p1z3/newrepo2:$BUILD_NUMBER
+		      docker push public.ecr.aws/c6p1p1z3/newrepo2:$BUILD_NUMBER
 		      '''
 	      }
       } 
